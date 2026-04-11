@@ -1,0 +1,29 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Realtime-chat-application-socket-io/Backend.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/Realtime-chat-application-socket-io/Backend/issues"
+  },
+  "homepage": "https://github.com/Realtime-chat-application-socket-io/Backend#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
+    "mongoose": "^9.3.3",
+    "nodemon": "^3.1.14",
+    "socket.io": "^4.8.3"
+  }
+}

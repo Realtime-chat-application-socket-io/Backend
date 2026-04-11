@@ -1,4 +1,4 @@
-import { User } from "../models/userModel.js"; // Model import karein
+import User from "../models/userModel.js"; // Model import karein
 import bcrypt from "bcrypt";
 
 // 1. Create User (Signup)
