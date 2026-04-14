@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import dotenv from "dotenv"
+dotenv.config()
 
 const connectDB = async() => {
     try {
@@ -6,7 +8,7 @@ const connectDB = async() => {
 
         console.log('MongoDB Connected');
     } catch (error) {
-        console.log('Error Connecting to MongDB');
+        console.log('Error Connecting to MongoDB');
         process.exit(1);
     }
 }

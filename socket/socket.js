@@ -8,10 +8,12 @@ export const initSocket = (server) => {
   });
 
   io.on("connection", (socket) => {
-    console.log("User connected:", socket.id);
+    const userId = socket.handshake.query.userId;
+    if (userId) socket.join(userId); // User ko unki ID ke room mein join karayein
 
     socket.on("sendMessage", (data) => {
-      socket.broadcast.emit("receiveMessage", data);
+      // Message sirf receiverId wale room ko bhejien
+      io.to(data.receiverId).emit("receiveMessage", data);
     });
 
     socket.on("disconnect", () => {
