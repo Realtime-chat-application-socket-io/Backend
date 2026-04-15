@@ -1,16 +1,30 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModel.js";
-import dotenv from "dotenv"
-dotenv.config()
 
 export const verifyToken = async (req, res, next) => {
-  const token = req.cookies.jwt || (req.headers.authorization && req.headers.authorization.startsWith("Bearer ") ? req.headers.authorization.split(" ")[1] : null);
-
-  if (!token) return res.status(401).json({ message: "Unauthorized: No token provided" });
-
   try {
+    let token;
+
+    // 🔥 1. Check Authorization header FIRST
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith("Bearer ")
+    ) {
+      token = req.headers.authorization.split(" ")[1];
+    }
+
+    // 🔥 2. Fallback to cookies (optional)
+    if (!token && req.cookies?.jwt) {
+      token = req.cookies.jwt;
+    }
+
+    // ❌ No token → reject
+    if (!token) {
+      return res.status(401).json({ message: "Unauthorized: No token provided" });
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    
+
     const user = await User.findById(decoded.id).select("-password");
 
     if (!user) {
@@ -18,9 +32,10 @@ export const verifyToken = async (req, res, next) => {
     }
 
     req.user = user;
+
     next();
   } catch (error) {
-    console.log("Error in verifyToken middleware: ", error.message);
-    res.status(500).json({ message: "Internal server error" });
+    console.log("Error in verifyToken middleware:", error.message);
+    res.status(401).json({ message: "Invalid token" }); 
   }
 };
