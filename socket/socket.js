@@ -7,7 +7,7 @@ export const initSocket = (server) => {
     cors: {
       origin: [
         "http://localhost:5173", // dev frontend
-        "https://pingchatify.netlify.app/" // (optional production)
+        "https://pingchatify.netlify.app" // (optional production)
       ],
       credentials: true,
     },
