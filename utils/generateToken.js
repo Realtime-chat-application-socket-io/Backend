@@ -1,7 +1,17 @@
 import jwt from "jsonwebtoken";
 
-export const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+export const generateToken = (id, res) => {
+  const token = jwt.sign({ id }, process.env.JWT_SECRET, {
     expiresIn: "7d"
   });
+
+  
+  res.cookie("jwt", token, {
+  maxAge: 7 * 24 * 60 * 60 * 1000,// MS
+  httpOnly: true,// prevent XSS attacks cross-site scripting attacks
+  secure: process.env.NODE_ENV === "production", 
+  sameSite: process.env.NODE_ENV === "production" ? "none" : "strict", // CSRF attacks cross-site request forgery attacks
+});
+
+  return token;
 };

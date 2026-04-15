@@ -11,10 +11,14 @@ const messageSchema = new mongoose.Schema({
     ref: "User",
     required: true
   },
-  message: {
+  text: {
     type: String,
-    required: true
+  },
+  image: {
+    type: String,
   }
 }, { timestamps: true });
+
+messageSchema.index({ senderId: 1, receiverId: 1 });
 
 export default mongoose.model("Message", messageSchema);

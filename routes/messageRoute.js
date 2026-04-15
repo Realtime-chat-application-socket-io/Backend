@@ -1,9 +1,12 @@
 import express from "express";
-import { sendMessage, getMessages } from "../controller/messageController.js";
+import { getContacts, getChats, getMessages, sendMessage } from "../controller/messageController.js";
+import { verifyToken } from "../middleware/authMiddleware.js";
 
 const router = express.Router();
 
-router.post("/send", sendMessage);
-router.get("/:senderId/:receiverId", getMessages);
+router.get("/contacts", verifyToken, getContacts);
+router.get("/chats", verifyToken, getChats);
+router.get("/:id", verifyToken, getMessages);
+router.post("/send/:id", verifyToken, sendMessage);
 
 export default router;

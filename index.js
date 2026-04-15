@@ -1,5 +1,6 @@
 import express from "express";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import  connectDB  from "./config/db.js";
 import authRoutes from "./routes/authRoute.js";
 import messageRoutes from "./routes/messageRoute.js";
@@ -12,14 +13,19 @@ dotenv.config()
 const app = express();
 
 app.use(cors({
-  origin: "https://pingchatify.netlify.app", // your frontend
-  credentials: true,
+  origin: [
+    "http://localhost:5173",
+     "https://pingchatify.netlify.app"
+  ],
+  credentials: true
 }));
-app.use(express.json());
+
+app.use(express.json({ limit: "15mb" })); // Increased to accommodate base64 uploads
+app.use(cookieParser());
 
 // routes
 app.use("/api/auth", authRoutes);
-app.use("/api/message", messageRoutes);
+app.use("/api/messages", messageRoutes);
 
 // DB connect
 connectDB();
