@@ -5,10 +5,10 @@ const router = express.Router();
 
 router.post("/signup",signup);
 
-router.post("/login",verifyToken,login);
+router.post("/login",login);
 
 router.post("/logout", logout);
 
-router.put("/update",verifyToken, update);
+router.put("/update", update);
 
 export default router;

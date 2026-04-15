@@ -20,7 +20,7 @@ app.use("/api/message", messageRoutes);
 
 // DB connect
 connectDB();
-let port = process.env.PORT || 8000
+let port = process.env.PORT
 const server = app.listen(port, () => {
   console.log("Server running on port 8000");
 });

@@ -76,7 +76,7 @@ export async function login(req, res) {
       success: true,
       message: "Login successful",
       token,
-      email,username
+      email
     });
 
   } catch (error) {
@@ -92,12 +92,17 @@ export async function login(req, res) {
 export async function update(req, res) {
     try {
         const { id } = req.params;
-        const { name, email } = req.body;
+        const { username, email } = req.body;
 
-        let updatedUser = await User.findByIdAndUpdate(
+        // Use $set to only update fields that are actually provided
+        const updateData = {};
+        if (username) updateData.name = username;
+        if (email) updateData.email = email;
+
+        const updatedUser = await User.findByIdAndUpdate(
             id,
-            { name, email },
-            { new: true }
+            { $set: updateData }, 
+            { new: true, runValidators: true } // runValidators ensures email format is still valid
         );
 
         if (!updatedUser) {
@@ -109,6 +114,7 @@ export async function update(req, res) {
 
         return res.status(200).json({
             success: true,
+            message: "Profile updated successfully",
             user: {
                 name: updatedUser.name,
                 email: updatedUser.email
@@ -116,8 +122,6 @@ export async function update(req, res) {
         });
 
     } catch (error) {
-        console.log("User update error:", error);
-
         return res.status(500).json({
             success: false,
             message: error.message
