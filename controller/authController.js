@@ -27,7 +27,7 @@ export async function signup(req, res) {
         });
 
         if (newUser) {
-            generateToken(newUser._id, res);
+            const token = generateToken(newUser._id, res);
             await newUser.save();
 
             return res.status(201).json({
@@ -35,6 +35,7 @@ export async function signup(req, res) {
                 fullName: newUser.fullName,
                 email: newUser.email,
                 profilePic: newUser.profilePic,
+                token: token,
             });
         } else {
             return res.status(400).json({ message: "Invalid user data" });
@@ -66,7 +67,7 @@ export async function login(req, res) {
     }
 
     // 3. Generate token
-    generateToken(user._id, res);
+    const token = generateToken(user._id, res);
 
     // 5. Send response
     return res.status(200).json({
@@ -74,6 +75,7 @@ export async function login(req, res) {
         fullName: user.fullName,
         email: user.email,
         profilePic: user.profilePic,
+        token: token,
     });
 
   } catch (error) {
