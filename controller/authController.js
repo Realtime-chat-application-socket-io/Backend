@@ -1,50 +1,48 @@
 import User from "../models/userModel.js";
+
 import bcrypt from "bcrypt";
 import { generateToken } from "../utils/generateToken.js";
 
 // 1. Create User (Signup)
 export async function signup(req, res) {
-    try {
-        const { fullName, email, password } = req.body;
-        
-        if (!fullName || !email || !password) {
-            return res.status(400).json({ message: "All fields are required" });
-        }
+  try {
+    const { fullName, email, password } = req.body;
 
-        let existingUser = await User.findOne({ email });
-
-        if (existingUser) {
-            return res.status(400).json({ message: "User already exists" });
-        }
-
-        let salt = await bcrypt.genSalt(10);
-        let hashedPassword = await bcrypt.hash(password, salt);
-
-        const newUser = new User({
-            fullName: fullName,
-            email,
-            password: hashedPassword
-        });
-
-        if (newUser) {
-            const token = generateToken(newUser._id, res);
-            await newUser.save();
-
-            return res.status(201).json({
-                _id: newUser._id,
-                fullName: newUser.fullName,
-                email: newUser.email,
-                profilePic: newUser.profilePic,
-                token: token,
-            });
-        } else {
-            return res.status(400).json({ message: "Invalid user data" });
-        }
-
-    } catch (error) {
-        console.log("Signup Error:", error);
-        return res.status(500).json({ message: "Internal Server Error" });
+    if (!fullName || !email || !password) {
+      return res.status(400).json({ message: "All fields are required" });
     }
+
+    const existingUser = await User.findOne({ email });
+
+    if (existingUser) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const newUser = new User({
+      fullName,
+      email,
+      password: hashedPassword,
+    });
+
+    await newUser.save(); // ✅ first save
+
+    const token = generateToken(newUser._id, res); // ✅ then token
+
+    return res.status(201).json({
+      _id: newUser._id,
+      fullName: newUser.fullName,
+      email: newUser.email,
+      profilePic: newUser.profilePic,
+      token,
+    });
+
+  } catch (error) {
+    console.log("Signup Error:", error);
+    return res.status(500).json({ message: error.message }); // ✅ show real error
+  }
 }
 
 // 2. User Login

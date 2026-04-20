@@ -5,7 +5,7 @@ export const verifyToken = async (req, res, next) => {
   try {
     let token;
 
-    // 🔥 1. Check Authorization header FIRST
+    
     if (
       req.headers.authorization &&
       req.headers.authorization.startsWith("Bearer ")
@@ -13,12 +13,12 @@ export const verifyToken = async (req, res, next) => {
       token = req.headers.authorization.split(" ")[1];
     }
 
-    // 🔥 2. Fallback to cookies (optional)
+    
     if (!token && req.cookies?.jwt) {
       token = req.cookies.jwt;
     }
 
-    // ❌ No token → reject
+    
     if (!token) {
       return res.status(401).json({ message: "Unauthorized: No token provided" });
     }
